@@ -1,0 +1,126 @@
+﻿@model Drva.Models.View.CustomerDetailViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h3>@Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)</h3>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-3">
+        @Html.DisplayName("First Name:")
+    </div>
+    <div class="col-md-3">
+        @Html.DisplayFor(model => model.FirstName)
+    </div>
+    <div class="col-md-3">
+        @Html.DisplayName("Last Name:")
+    </div>
+    <div class="col-md-3">
+        @Html.DisplayFor(model => model.LastName)
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-3">
+        @Html.DisplayName("Street:")
+    </div>
+    <div class="col-md-3">
+        @Html.DisplayFor(model => model.Address.StreetAndNumber)
+    </div>
+    <div class="col-md-3">
+        @Html.DisplayName("Post Number:")
+    </div>
+    <div class="col-md-3">
+        @Html.DisplayFor(model => model.Address.PostNumber)
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-3">
+        @Html.DisplayName("Place:")
+    </div>
+    <div class="col-md-3">
+        @Html.DisplayFor(model => model.Address.Place)
+    </div>
+    <div class="col-md-3">
+        @Html.DisplayName("District:")
+    </div>
+    <div class="col-md-3">
+        @Html.DisplayFor(model => model.Address.District)
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-3">
+        @Html.DisplayName("Phone Numbers:")
+    </div>
+    <div class="col-md-9">
+        @Html.DisplayFor(model => model.PhoneNumbers)
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-md-push-2 col-md-8">
+        <div id="map_canvas" style="width: 640px; height: 480px;">
+        </div>
+    </div>
+</div>
+
+<h4>Orders</h4>
+@for (int i = 1; i <= Model.Orders.Count; i++)
+{
+    var order = Model.Orders[i - 1];
+    if (order.DeliveryDate != null)
+    {
+        <b>@i) @order.DeliveryDate</b>
+    }
+    else
+    {
+        <b>@i) Not delivered</b>
+    }
+    <br /> <br />
+    <div class="row">
+        @foreach (var unit in order.Units)
+        {
+            <div class="col-md-3">
+                <p>Price: @unit.Price</p>
+                <p>Amount: @unit.Amount</p>
+                <p>Measure: @unit.SawingType</p>
+                <p>Wood: @unit.WoodType</p>
+            </div>
+        }
+    </div>
+    <br />
+}
+<hr />
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.CustomerID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+@section scripts {
+    <section class="scripts">
+        <script type="text/javascript">
+            $(document).ready(function () {
+                Initialize();
+            });
+
+            function Initialize() {
+                google.maps.visualRefresh = true;
+                var Liverpool = new google.maps.LatLng(53.408841, -2.981397);
+                var mapOptions = {
+                    zoom: 14,
+                    center: Liverpool,
+                    mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP
+                };
+
+                var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+            }
+        </script>
+    </section>
+}
